@@ -1,5 +1,7 @@
 package de.dotwee.pocketclipper.api;
 
+import android.net.Uri;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
@@ -38,6 +40,20 @@ public class PocketApi {
                 BuildConfig.PocketApiCustomerKey,
                 BuildConfig.PocketApiRedirectUri
         );
+    }
+
+    public Uri getAuthorizationUri(PocketService.RequestTokenCode requestTokenCode) {
+        /*
+        return Uri.parse(PocketService.API_URL)
+                .buildUpon()
+                .appendPath(PocketService.PATH_OAUTH)
+                .appendQueryParameter(PocketService.PARAMETER_REQUEST_TOKEN, requestTokenCode.code)
+                .appendQueryParameter(PocketService.PARAMETER_REDIRECT_URI, BuildConfig.PocketApiRedirectUri)
+                .build();
+        */
+
+        String url = PocketService.API_URL + PocketService.PATH_OAUTH + "?" + PocketService.PARAMETER_REQUEST_TOKEN + "=" + requestTokenCode.code + "&" + PocketService.PARAMETER_REDIRECT_URI + "=" + BuildConfig.PocketApiRedirectUri;
+        return Uri.parse(url);
     }
 
     static final class ObserveOnMainCallAdapterFactory extends CallAdapter.Factory {
