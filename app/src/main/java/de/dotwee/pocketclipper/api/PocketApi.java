@@ -42,6 +42,13 @@ public class PocketApi {
         );
     }
 
+    public Observable<PocketService.AccessTokenResponse> getAccessTokenObservable(PocketService.RequestTokenCode requestTokenCode) {
+        return this.pocket.getAccessToken(
+                BuildConfig.PocketApiCustomerKey,
+                requestTokenCode.code
+        );
+    }
+
     public Uri getAuthorizationUri(PocketService.RequestTokenCode requestTokenCode) {
         /*
         return Uri.parse(PocketService.API_URL)

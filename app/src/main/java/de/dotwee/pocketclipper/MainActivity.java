@@ -22,25 +22,23 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, Consumer<PocketService.RequestTokenCode> {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     Disposable requestTokenCodeObservable;
-    PocketService.RequestTokenCode requestTokenCode;
-    PocketApi pocketApi;
+    Consumer<PocketService.RequestTokenCode> onRequestTokenSuccess = new Consumer<PocketService.RequestTokenCode>() {
+        @Override
+        public void accept(PocketService.RequestTokenCode requestTokenCode) throws Exception {
+            MainActivity.this.requestTokenCode = requestTokenCode;
 
-    TableLayout tableLayoutStatus;
-    Button buttonAuthorize;
+            textViewTokenRequestStatus.setText("Success: Code=" + requestTokenCode.code);
+            progressBarTokenRequest.setVisibility(View.GONE);
+            imageViewTokenRequestStatus.setVisibility(View.VISIBLE);
+            imageViewTokenRequestStatus.setImageResource(R.drawable.ic_status_positive);
 
-    ProgressBar progressBarTokenRequest;
-    ImageView imageViewTokenRequestStatus;
-    TextView textViewTokenRequestStatus;
-
-    TableRow tableRowAuthorize;
-    ProgressBar progressBarTokenAuthorize;
-    ImageView imageViewTokenAuthorizeStatus;
-    TextView textViewTokenAuthorizeStatus;
-
+            onContinueWithAuthorization();
+        }
+    };
     Consumer<Throwable> onRequestTokenCodeError = new Consumer<Throwable>() {
         @Override
         public void accept(Throwable throwable) throws Exception {
@@ -50,6 +48,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             progressBarTokenRequest.setVisibility(View.GONE);
             imageViewTokenRequestStatus.setVisibility(View.VISIBLE);
             imageViewTokenRequestStatus.setImageResource(R.drawable.ic_status_negative);
+
+            buttonAuthorize.setEnabled(true);
+        }
+    };
+
+    Disposable accessTokenCodeObservable;
+    PocketService.AccessTokenResponse accessTokenResponse;
+    TableRow tableRowAccess;
+    ProgressBar progressBarTokenAccess;
+    PocketService.RequestTokenCode requestTokenCode;
+    PocketApi pocketApi;
+    TableLayout tableLayoutStatus;
+    Button buttonAuthorize;
+    ProgressBar progressBarTokenRequest;
+    ImageView imageViewTokenRequestStatus;
+    TextView textViewTokenRequestStatus;
+
+
+    TableRow tableRowAuthorize;
+    ProgressBar progressBarTokenAuthorize;
+    ImageView imageViewTokenAuthorizeStatus;
+    TextView textViewTokenAuthorizeStatus;
+    ImageView imageViewTokenAccessStatus;
+    TextView textViewTokenAccessStatus;
+    Consumer<PocketService.AccessTokenResponse> onAccessTokenSuccess = new Consumer<PocketService.AccessTokenResponse>() {
+        @Override
+        public void accept(PocketService.AccessTokenResponse accessTokenResponse) throws Exception {
+            MainActivity.this.accessTokenResponse = accessTokenResponse;
+            tableRowAccess.setVisibility(View.VISIBLE);
+
+            textViewTokenAccessStatus.setText("Success: access_token=" + accessTokenResponse.accessToken + " username=" + accessTokenResponse.username);
+            progressBarTokenAccess.setVisibility(View.GONE);
+            imageViewTokenAccessStatus.setVisibility(View.VISIBLE);
+            imageViewTokenAccessStatus.setImageResource(R.drawable.ic_status_positive);
+
+            onContinueWithAuthorization();
+        }
+    };
+    Consumer<Throwable> onAccessTokenError = new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Timber.e(throwable);
+
+            textViewTokenAccessStatus.setText("Error: Message=" + throwable.getMessage());
+            progressBarTokenAccess.setVisibility(View.GONE);
+            imageViewTokenAccessStatus.setVisibility(View.VISIBLE);
+            imageViewTokenAccessStatus.setImageResource(R.drawable.ic_status_negative);
 
             buttonAuthorize.setEnabled(true);
         }
@@ -79,6 +124,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBarTokenAuthorize = findViewById(R.id.progressBarTokenAuthorize);
         imageViewTokenAuthorizeStatus = findViewById(R.id.imageViewTokenAuthorizeStatus);
         textViewTokenAuthorizeStatus = findViewById(R.id.textViewTokenAuthorizeStatus);
+
+        tableRowAccess = findViewById(R.id.tableRowAccess);
+        progressBarTokenAccess = findViewById(R.id.progressBarTokenAccess);
+        imageViewTokenAccessStatus = findViewById(R.id.imageViewTokenAccessStatus);
+        textViewTokenAccessStatus = findViewById(R.id.textViewTokenAccessStatus);
     }
 
     @Override
@@ -140,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewTokenRequestStatus.setText("Starting request...");
 
         requestTokenCodeObservable = pocketApi.getRequestTokenObservable()
-                .subscribe(this, onRequestTokenCodeError);
+                .subscribe(onRequestTokenSuccess, onRequestTokenCodeError);
     }
 
     private void onContinueWithAuthorization() {
@@ -156,7 +206,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onFinishAccessToken() {
+        tableRowAccess.setVisibility(View.VISIBLE);
+        progressBarTokenAccess.setVisibility(View.VISIBLE);
+        imageViewTokenAccessStatus.setVisibility(View.GONE);
+        textViewTokenRequestStatus.setText("Starting request...");
 
+        accessTokenCodeObservable = pocketApi.getAccessTokenObservable(this.requestTokenCode)
+                .subscribe(onAccessTokenSuccess, onAccessTokenError);
     }
 
     @Override
@@ -169,18 +225,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
             }
         }
-    }
-
-    @Override
-    public void accept(PocketService.RequestTokenCode requestTokenCode) throws Exception {
-        this.requestTokenCode = requestTokenCode;
-
-        textViewTokenRequestStatus.setText("Success: Code=" + requestTokenCode.code);
-        progressBarTokenRequest.setVisibility(View.GONE);
-        imageViewTokenRequestStatus.setVisibility(View.VISIBLE);
-        imageViewTokenRequestStatus.setImageResource(R.drawable.ic_status_positive);
-
-        onContinueWithAuthorization();
     }
 
     @Override

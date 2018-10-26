@@ -76,6 +76,36 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </TableRow>
 
+        <TableRow
+            android:id="@+id/tableRowAccess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="32dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progressBarTokenAccess"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imageViewTokenAccessStatus"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textViewTokenAccessStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Waiting for access token request to finish..."
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </TableRow>
+
     </TableLayout>
 
     <Button
