@@ -14,6 +14,21 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField 'String', "PocketApiCustomerKey", ClipperForPocket_PocketApiCustomerKey
+            buildConfigField 'String', "PocketApiRedirectUri", ClipperForPocket_PocketApiRedirectUri
+            resValue 'string', "pocket_api_redirect_scheme", ClipperForPocket_PocketApiRedirectScheme
+        }
+        debug {
+            buildConfigField 'String', "PocketApiCustomerKey", ClipperForPocket_PocketApiCustomerKey
+            buildConfigField 'String', "PocketApiRedirectUri", ClipperForPocket_PocketApiRedirectUri
+            resValue 'string', "pocket_api_redirect_scheme", ClipperForPocket_PocketApiRedirectScheme
+        }
+
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
 }
