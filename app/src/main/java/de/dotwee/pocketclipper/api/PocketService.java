@@ -25,7 +25,7 @@ public final class PocketService {
         @FormUrlEncoded
         @Headers(HEADER_X_ACCEPT_JSON)
         @POST("/v3/oauth/request")
-        Observable<RequestTokenCode> getRequestToken(
+        Observable<RequestTokenResponse> getRequestToken(
                 @Field(PARAMETER_CONSUMER_KEY) String consumerKey,
                 @Field(PARAMETER_REDIRECT_URI_KEY) String redirectUri);
 
@@ -38,10 +38,10 @@ public final class PocketService {
 
     }
 
-    public static class RequestTokenCode {
+    public static class RequestTokenResponse {
         public final String code;
 
-        public RequestTokenCode(String code) {
+        public RequestTokenResponse(String code) {
             this.code = code;
         }
     }

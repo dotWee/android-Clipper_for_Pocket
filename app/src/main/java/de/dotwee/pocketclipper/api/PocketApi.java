@@ -35,31 +35,31 @@ public class PocketApi {
         this.pocket = retrofit.create(PocketService.Pocket.class);
     }
 
-    public Observable<PocketService.RequestTokenCode> getRequestTokenObservable() {
+    public Observable<PocketService.RequestTokenResponse> getRequestTokenObservable() {
         return this.pocket.getRequestToken(
                 BuildConfig.PocketApiCustomerKey,
                 BuildConfig.PocketApiRedirectUri
         );
     }
 
-    public Observable<PocketService.AccessTokenResponse> getAccessTokenObservable(PocketService.RequestTokenCode requestTokenCode) {
+    public Observable<PocketService.AccessTokenResponse> getAccessTokenObservable(PocketService.RequestTokenResponse requestTokenResponse) {
         return this.pocket.getAccessToken(
                 BuildConfig.PocketApiCustomerKey,
-                requestTokenCode.code
+                requestTokenResponse.code
         );
     }
 
-    public Uri getAuthorizationUri(PocketService.RequestTokenCode requestTokenCode) {
+    public Uri getAuthorizationUri(PocketService.RequestTokenResponse requestTokenResponse) {
         /*
         return Uri.parse(PocketService.API_URL)
                 .buildUpon()
                 .appendPath(PocketService.PATH_OAUTH)
-                .appendQueryParameter(PocketService.PARAMETER_REQUEST_TOKEN, requestTokenCode.code)
+                .appendQueryParameter(PocketService.PARAMETER_REQUEST_TOKEN, requestTokenResponse.code)
                 .appendQueryParameter(PocketService.PARAMETER_REDIRECT_URI, BuildConfig.PocketApiRedirectUri)
                 .build();
         */
 
-        String url = PocketService.API_URL + PocketService.PATH_OAUTH + "?" + PocketService.PARAMETER_REQUEST_TOKEN + "=" + requestTokenCode.code + "&" + PocketService.PARAMETER_REDIRECT_URI + "=" + BuildConfig.PocketApiRedirectUri;
+        String url = PocketService.API_URL + PocketService.PATH_OAUTH + "?" + PocketService.PARAMETER_REQUEST_TOKEN + "=" + requestTokenResponse.code + "&" + PocketService.PARAMETER_REDIRECT_URI + "=" + BuildConfig.PocketApiRedirectUri;
         return Uri.parse(url);
     }
 

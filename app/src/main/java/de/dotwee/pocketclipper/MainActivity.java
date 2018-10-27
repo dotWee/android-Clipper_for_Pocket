@@ -26,19 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     Disposable requestTokenCodeObservable;
-    Consumer<PocketService.RequestTokenCode> onRequestTokenSuccess = new Consumer<PocketService.RequestTokenCode>() {
-        @Override
-        public void accept(PocketService.RequestTokenCode requestTokenCode) throws Exception {
-            MainActivity.this.requestTokenCode = requestTokenCode;
-
-            textViewTokenRequestStatus.setText("Success: Code=" + requestTokenCode.code);
-            progressBarTokenRequest.setVisibility(View.GONE);
-            imageViewTokenRequestStatus.setVisibility(View.VISIBLE);
-            imageViewTokenRequestStatus.setImageResource(R.drawable.ic_status_positive);
-
-            onContinueWithAuthorization();
-        }
-    };
+    PocketService.RequestTokenResponse requestTokenResponse;
     Consumer<Throwable> onRequestTokenCodeError = new Consumer<Throwable>() {
         @Override
         public void accept(Throwable throwable) throws Exception {
@@ -57,7 +45,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     PocketService.AccessTokenResponse accessTokenResponse;
     TableRow tableRowAccess;
     ProgressBar progressBarTokenAccess;
-    PocketService.RequestTokenCode requestTokenCode;
+    Consumer<PocketService.RequestTokenResponse> onRequestTokenSuccess = new Consumer<PocketService.RequestTokenResponse>() {
+        @Override
+        public void accept(PocketService.RequestTokenResponse requestTokenResponse) throws Exception {
+            MainActivity.this.requestTokenResponse = requestTokenResponse;
+
+            textViewTokenRequestStatus.setText("Success: Code=" + requestTokenResponse.code);
+            progressBarTokenRequest.setVisibility(View.GONE);
+            imageViewTokenRequestStatus.setVisibility(View.VISIBLE);
+            imageViewTokenRequestStatus.setImageResource(R.drawable.ic_status_positive);
+
+            onContinueWithAuthorization();
+        }
+    };
     PocketApi pocketApi;
     TableLayout tableLayoutStatus;
     Button buttonAuthorize;
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBarTokenAuthorize.setVisibility(View.VISIBLE);
         imageViewTokenAuthorizeStatus.setVisibility(View.GONE);
 
-        Uri uri = pocketApi.getAuthorizationUri(requestTokenCode);
+        Uri uri = pocketApi.getAuthorizationUri(requestTokenResponse);
         Timber.i("onContinueWithAuthorization: uri=%s", uri.toString());
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         CustomTabsIntent customTabsIntent = builder.build();
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewTokenAccessStatus.setVisibility(View.GONE);
         textViewTokenRequestStatus.setText("Starting request...");
 
-        accessTokenCodeObservable = pocketApi.getAccessTokenObservable(this.requestTokenCode)
+        accessTokenCodeObservable = pocketApi.getAccessTokenObservable(this.requestTokenResponse)
                 .subscribe(onAccessTokenSuccess, onAccessTokenError);
     }
 
