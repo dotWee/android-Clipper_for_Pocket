@@ -1,9 +1,7 @@
 package de.dotwee.pocketclipper.ui.auth;
 
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import de.dotwee.pocketclipper.api.PocketService;
@@ -17,28 +15,14 @@ public class RequestTokenAuthFragment extends AbstractAuthFragment<RequestTokenA
     public RequestTokenAuthFragment() {
     }
 
-    public static RequestTokenAuthFragment newInstance() {
-        return new RequestTokenAuthFragment();
-    }
-
     public static RequestTokenAuthFragment newInstance(Callback callback) {
         RequestTokenAuthFragment fragment = new RequestTokenAuthFragment();
         fragment.setCallback(callback);
         return fragment;
     }
 
-    public Callback getCallback() {
-        return callback;
-    }
-
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Timber.i("onViewCreated");
     }
 
     @Override
@@ -55,11 +39,8 @@ public class RequestTokenAuthFragment extends AbstractAuthFragment<RequestTokenA
     public void onDisplaySuccess() {
         super.onDisplaySuccess();
 
-        PocketService.RequestTokenResponse requestTokenResponse = viewModel.requestTokenResponse;
-        Timber.i("onDisplaySuccess: tokenCode=%s", requestTokenResponse.toString());
-        if (callback != null) {
-            callback.onNext(requestTokenResponse);
-        }
+        PocketService.RequestTokenResponse requestTokenResponse = viewModel.getRequestTokenResponse();
+        callback.onNext(requestTokenResponse);
     }
 
     public interface Callback {

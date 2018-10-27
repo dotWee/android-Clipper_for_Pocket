@@ -20,7 +20,6 @@ public abstract class AbstractAuthFragment<M extends AbstractAuthViewModel> exte
     protected TextView textViewMessage;
     protected ProgressBar progressBar;
     protected Button buttonStart;
-    protected Button buttonNext;
 
     protected M viewModel;
 
@@ -44,15 +43,6 @@ public abstract class AbstractAuthFragment<M extends AbstractAuthViewModel> exte
                 viewModel.onStart();
             }
         });
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timber.i("onClick buttonNext");
-                viewModel.onStart();
-            }
-        });
-
-        buttonNext.setVisibility(viewModel.buttonNextVisibility ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Nullable
@@ -70,14 +60,12 @@ public abstract class AbstractAuthFragment<M extends AbstractAuthViewModel> exte
         textViewMessage = view.findViewById(R.id.textViewMessage);
         progressBar = view.findViewById(R.id.progressBar);
         buttonStart = view.findViewById(R.id.buttonStart);
-        buttonNext = view.findViewById(R.id.buttonNext);
     }
 
     @Override
     public void onDisplayStartup() {
         progressBar.setVisibility(View.VISIBLE);
         buttonStart.setEnabled(false);
-        buttonNext.setVisibility(View.INVISIBLE);
         textViewMessage.setText("Performing request...");
     }
 
@@ -87,24 +75,20 @@ public abstract class AbstractAuthFragment<M extends AbstractAuthViewModel> exte
         buttonStart.setEnabled(false);
 
         buttonStart.setVisibility(View.INVISIBLE);
-        buttonNext.setVisibility(View.VISIBLE);
         textViewMessage.setText("Success!");
     }
 
     @Override
     public void onDisplayError(Throwable throwable) {
+        Timber.e(throwable);
+
         progressBar.setVisibility(View.INVISIBLE);
         buttonStart.setEnabled(true);
-        buttonNext.setVisibility(View.INVISIBLE);
+        textViewMessage.setText("Error: " + throwable.getMessage());
     }
 
     @Override
     public void onDisplayCompleted() {
         progressBar.setVisibility(View.INVISIBLE);
-        buttonNext.setEnabled(true);
-
-        if (buttonNext.getVisibility() == View.VISIBLE) {
-            buttonStart.setEnabled(false);
-        }
     }
 }
