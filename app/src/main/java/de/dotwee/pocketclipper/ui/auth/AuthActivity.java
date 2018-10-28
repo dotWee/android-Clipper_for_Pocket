@@ -16,6 +16,9 @@ import de.dotwee.pocketclipper.R;
 import de.dotwee.pocketclipper.api.PocketApi;
 import de.dotwee.pocketclipper.api.PocketService;
 import de.dotwee.pocketclipper.helper.KeyStoreHelper;
+import de.dotwee.pocketclipper.ui.auth.access.AccessTokenAuthFragment;
+import de.dotwee.pocketclipper.ui.auth.request.RequestTokenAuthFragment;
+import de.dotwee.pocketclipper.ui.auth.start.StartAuthFragment;
 import timber.log.Timber;
 
 public class AuthActivity extends AppCompatActivity implements RequestTokenAuthFragment.Callback, AccessTokenAuthFragment.Callback, StartAuthFragment.Callback {

@@ -17,7 +17,7 @@ public abstract class AbstractAuthViewModel extends ViewModel {
         return callback;
     }
 
-    protected void setCallback(Callback callback) {
+    public void setCallback(Callback callback) {
         this.callback = callback;
     }
 

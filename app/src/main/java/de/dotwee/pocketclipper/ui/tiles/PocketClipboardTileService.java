@@ -13,7 +13,7 @@ import de.dotwee.pocketclipper.helper.KeyStoreHelper;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
-public class PocketClipboardTileService extends TileService implements Consumer<PocketService.AddLinkResponse> {
+public class PocketClipboardTileService extends TileService {
     private static final String LOG_TAG = PocketClipboardTileService.class.getSimpleName();
 
     private Consumer<Throwable> onErrorConsumer;
@@ -90,10 +90,5 @@ public class PocketClipboardTileService extends TileService implements Consumer<
     @Override
     public IBinder onBind(Intent intent) {
         return super.onBind(intent);
-    }
-
-    @Override
-    public void accept(PocketService.AddLinkResponse addLinkResponse) throws Exception {
-
     }
 }

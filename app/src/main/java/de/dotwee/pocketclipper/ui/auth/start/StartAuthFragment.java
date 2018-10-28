@@ -1,4 +1,4 @@
-package de.dotwee.pocketclipper.ui.auth;
+package de.dotwee.pocketclipper.ui.auth.start;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

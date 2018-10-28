@@ -1,7 +1,8 @@
-package de.dotwee.pocketclipper.ui.auth;
+package de.dotwee.pocketclipper.ui.auth.access;
 
 import de.dotwee.pocketclipper.api.PocketApi;
 import de.dotwee.pocketclipper.api.PocketService;
+import de.dotwee.pocketclipper.ui.auth.AbstractAuthViewModel;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;

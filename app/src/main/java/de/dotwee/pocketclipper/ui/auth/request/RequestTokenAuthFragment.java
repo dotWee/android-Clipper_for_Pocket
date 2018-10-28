@@ -1,10 +1,11 @@
-package de.dotwee.pocketclipper.ui.auth;
+package de.dotwee.pocketclipper.ui.auth.request;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import de.dotwee.pocketclipper.api.PocketService;
+import de.dotwee.pocketclipper.ui.auth.AbstractAuthFragment;
 import timber.log.Timber;
 
 public class RequestTokenAuthFragment extends AbstractAuthFragment<RequestTokenAuthViewModel> {
