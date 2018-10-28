@@ -1,4 +1,4 @@
-package de.dotwee.pocketclipper.ui;
+package de.dotwee.pocketclipper.ui.auth;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,8 +13,6 @@ import de.dotwee.pocketclipper.BuildConfig;
 import de.dotwee.pocketclipper.R;
 import de.dotwee.pocketclipper.api.PocketApi;
 import de.dotwee.pocketclipper.api.PocketService;
-import de.dotwee.pocketclipper.ui.auth.AccessTokenAuthFragment;
-import de.dotwee.pocketclipper.ui.auth.RequestTokenAuthFragment;
 import timber.log.Timber;
 
 public class AuthActivity extends AppCompatActivity implements RequestTokenAuthFragment.Callback, AccessTokenAuthFragment.Callback {
@@ -83,6 +81,5 @@ public class AuthActivity extends AppCompatActivity implements RequestTokenAuthF
     @Override
     public void onNext(PocketService.AccessTokenResponse accessTokenResponse) {
         Toast.makeText(this, "accessTokenResponse=" + accessTokenResponse.toString(), Toast.LENGTH_SHORT).show();
-
     }
 }
