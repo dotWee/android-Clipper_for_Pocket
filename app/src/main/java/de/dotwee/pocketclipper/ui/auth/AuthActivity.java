@@ -1,8 +1,10 @@
 package de.dotwee.pocketclipper.ui.auth;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,13 +15,18 @@ import de.dotwee.pocketclipper.BuildConfig;
 import de.dotwee.pocketclipper.R;
 import de.dotwee.pocketclipper.api.PocketApi;
 import de.dotwee.pocketclipper.api.PocketService;
+import de.dotwee.pocketclipper.helper.KeyStoreHelper;
 import timber.log.Timber;
 
-public class AuthActivity extends AppCompatActivity implements RequestTokenAuthFragment.Callback, AccessTokenAuthFragment.Callback {
+public class AuthActivity extends AppCompatActivity implements RequestTokenAuthFragment.Callback, AccessTokenAuthFragment.Callback, StartAuthFragment.Callback {
     private static final String LOG_TAG = AuthActivity.class.getSimpleName();
 
     FragmentManager fragmentManager;
+    StartAuthFragment startAuthFragment;
     PocketService.RequestTokenResponse requestTokenResponse;
+
+
+    SharedPreferences sharedPreferences;
     PocketApi pocketApi;
 
     @Override
@@ -32,10 +39,12 @@ public class AuthActivity extends AppCompatActivity implements RequestTokenAuthF
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         fragmentManager = getSupportFragmentManager();
         pocketApi = new PocketApi();
 
-        getSupportFragmentManager().beginTransaction()
+        startAuthFragment = StartAuthFragment.newInstance(this);
+        fragmentManager.beginTransaction()
                 .replace(R.id.container, RequestTokenAuthFragment.newInstance(this))
                 .commitNow();
     }
@@ -45,6 +54,7 @@ public class AuthActivity extends AppCompatActivity implements RequestTokenAuthF
         this.requestTokenResponse = requestTokenResponse;
 
         Toast.makeText(this, "requestToken=" + this.requestTokenResponse.toString(), Toast.LENGTH_SHORT).show();
+        KeyStoreHelper.writeRequestToken(PreferenceManager.getDefaultSharedPreferences(this), requestTokenResponse.code);
 
         Uri uri = pocketApi.getAuthorizationUri(requestTokenResponse);
         Timber.i("onContinueWithAuthorization: uri=%s", uri.toString());
@@ -81,5 +91,15 @@ public class AuthActivity extends AppCompatActivity implements RequestTokenAuthF
     @Override
     public void onNext(PocketService.AccessTokenResponse accessTokenResponse) {
         Toast.makeText(this, "accessTokenResponse=" + accessTokenResponse.toString(), Toast.LENGTH_SHORT).show();
+
+        KeyStoreHelper.writeAccessToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()), accessTokenResponse.accessToken);
+        KeyStoreHelper.writeUsername(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()), accessTokenResponse.username);
+    }
+
+    @Override
+    public void onClickStart() {
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, RequestTokenAuthFragment.newInstance(this))
+                .commitNow();
     }
 }

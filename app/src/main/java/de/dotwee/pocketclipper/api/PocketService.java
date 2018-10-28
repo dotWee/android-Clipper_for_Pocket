@@ -14,6 +14,10 @@ public final class PocketService {
     public static final String PARAMETER_CONSUMER_KEY = "consumer_key";
     public static final String PARAMETER_REDIRECT_URI_KEY = "redirect_uri";
     public static final String PARAMETER_REQUEST_TOKEN = "request_token";
+    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
+    public static final String PARAMETER_URL = "url";
+    public static final String PARAMETER_TITLE = "title";
+    public static final String PARAMETER_TIME = "time";
     public static final String PARAMETER_REQUEST_CODE = "code";
     public static final String PARAMETER_REDIRECT_URI = "redirect_uri";
 
@@ -36,6 +40,21 @@ public final class PocketService {
                 @Field(PARAMETER_CONSUMER_KEY) String consumerKey,
                 @Field(PARAMETER_REQUEST_CODE) String code);
 
+        @FormUrlEncoded
+        @Headers(HEADER_X_ACCEPT_JSON)
+        @POST("/v3/add")
+        Observable<AddLinkResponse> addLink(
+                @Field(PARAMETER_CONSUMER_KEY) String consumerKey,
+                @Field(PARAMETER_ACCESS_TOKEN) String accessToken,
+                @Field(PARAMETER_URL) String url);
+    }
+
+    public static class AddLinkResponse {
+        public final int status;
+
+        public AddLinkResponse(int status) {
+            this.status = status;
+        }
     }
 
     public static class RequestTokenResponse {

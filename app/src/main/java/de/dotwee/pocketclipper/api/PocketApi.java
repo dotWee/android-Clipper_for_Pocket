@@ -35,6 +35,14 @@ public class PocketApi {
         this.pocket = retrofit.create(PocketService.Pocket.class);
     }
 
+    public Observable<PocketService.AddLinkResponse> getAddLinkObservable(String accessToken, String url) {
+        return this.pocket.addLink(
+                BuildConfig.PocketApiCustomerKey,
+                accessToken,
+                url
+        );
+    }
+
     public Observable<PocketService.RequestTokenResponse> getRequestTokenObservable() {
         return this.pocket.getRequestToken(
                 BuildConfig.PocketApiCustomerKey,

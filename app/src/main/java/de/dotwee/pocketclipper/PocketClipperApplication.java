@@ -1,6 +1,7 @@
 package de.dotwee.pocketclipper;
 
 import android.app.Application;
+import android.content.ClipboardManager;
 import android.content.Context;
 
 import timber.log.Timber;
@@ -9,16 +10,16 @@ import timber.log.Timber;
 
 public class PocketClipperApplication extends Application {
 
-    //public static CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-    // TODO set toolbar color and/or setting custom actions
-    //.build();
     private static Context applicationContext;
+    public static ClipboardManager clipboardManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         PocketClipperApplication.applicationContext = getApplicationContext();
+        PocketClipperApplication.clipboardManager =
+                (ClipboardManager) applicationContext.getSystemService(CLIPBOARD_SERVICE);
         Timber.plant(new Timber.DebugTree());
 
         /*
